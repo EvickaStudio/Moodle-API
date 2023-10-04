@@ -18,7 +18,7 @@ This project aims to develop a simple and easy-to-use Python API wrapper for Moo
 - `login(username, password)`: Authenticate and initialize session.
 - `get_site_info()`: Retrieve site-specific information.
 - `get_popup_notifications(user_id)`: Fetch user-specific popup notifications.
-- `popup_notification_acknowledge(user_id)`: Acknowledge popup notifications. (correct?)
+- `popup_notification_unread_count(user_id)`: Fetch user-specific unread popup notifications count.
 
 ## To-Do List
 1. Complete current methods.

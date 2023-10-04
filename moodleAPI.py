@@ -4,6 +4,47 @@ import logging
 
 
 class MoodleAPI:
+    """
+    MoodleAPI
+
+    A class that provides methods for interacting with the Moodle API.
+
+    Attributes:
+        config (ConfigParser): The configuration parser object.
+        url (str): The URL of the Moodle instance.
+        session (Session): The requests session object.
+        requestHeader (dict): The headers for the requests.
+        token (str): The authentication token.
+        userid (str): The user ID.
+
+    Methods:
+        __init__(config_file: str) -> None:
+            Initializes the MoodleAPI object.
+
+        login(username: str, password: str) -> bool:
+            Logs in to the Moodle instance.
+
+        get_site_info() -> dict:
+            Retrieves site information from the Moodle instance.
+
+        get_popup_notifications(user_id: str) -> dict:
+            Retrieves popup notifications for a user.
+
+        popup_notification_acknowledge(user_id: str) -> dict:
+            Acknowledges popup notifications for a user.
+
+        _post(arg0: str, user_id: str) -> dict:
+            Sends a POST request to the Moodle API.
+
+    Example:
+        ```python
+        api = MoodleAPI("config.ini")
+        api.login("username", "password")
+        site_info = api.get_site_info()
+        print(site_info)
+        ```
+    """
+
     def __init__(self, config_file):
         self.config = configparser.ConfigParser()
         self.config.read(config_file)
@@ -21,6 +62,11 @@ class MoodleAPI:
         self.userid = None
 
     def login(self, username, password):
+        """
+        login(self, username: str, password: str) -> bool:
+            Logs in to the Moodle instance using the provided username and password.
+            Sets the token for the MoodleAPI object.
+        """
         login_data = {
             "username": username,
             "password": password,
@@ -36,6 +82,10 @@ class MoodleAPI:
             return False
 
     def get_site_info(self):
+        """
+        get_site_info(self) -> dict:
+            Retrieves site information from the Moodle instance.
+        """
         if self.token is None:
             logging.error("Token not set. Please login first.")
             return None
@@ -52,12 +102,21 @@ class MoodleAPI:
         return response.json()
 
     def get_popup_notifications(self, user_id):
+        """
+        Retrieves popup notifications for a user.
+        """
         return self._post("message_popup_get_popup_notifications", user_id)
 
-    def popup_notification_acknowledge(self, user_id):
+    def popup_notification_unread_count(self, user_id):
+        """
+        Retrieves the number of unread popup notifications for a user.
+        """
         return self._post("message_popup_get_unread_popup_notification_count", user_id)
 
     def _post(self, arg0, user_id):
+        """
+        Sends a POST request to the Moodle API with an given wsfunction and user ID.
+        """
         if self.token is None:
             logging.error("Token not set. Please login first.")
             return None
@@ -72,5 +131,3 @@ class MoodleAPI:
             f"{self.url}webservice/rest/server.php", params=params
         )
         return response.json()
-
-
